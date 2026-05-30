@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_1/data/api/connectivity_service.dart';
-import 'package:food_1/provider/temp_provider.dart';
+import 'package:food_1/provider/context_provider.dart';
 
 import '../data/api/recipe_api_service.dart';
 import '../data/model/recipe_model.dart';

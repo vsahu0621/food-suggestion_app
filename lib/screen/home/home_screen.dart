@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:food_1/provider/temp_provider.dart';
+import 'package:food_1/provider/context_provider.dart';
 import 'package:food_1/provider/favorites_provider.dart';
 import 'package:food_1/provider/recipe_provider.dart';
 import 'package:food_1/widgets/Section_header.dart';
