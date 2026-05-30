@@ -101,7 +101,7 @@ class NotificationService {
       id: 2,
       title: '🥗 Lunchtime!',
       body: 'Hungry? We\'ve picked a great lunch recipe for you.',
-      hour: 13,
+      hour: 14,
       minute: 0,
     );
 
@@ -109,7 +109,7 @@ class NotificationService {
       id: 3,
       title: '🍽️ Dinner ideas',
       body: 'Wind down with a delicious dinner recipe tonight.',
-      hour: 19,
+      hour: 20,
       minute: 0,
     );
   }

@@ -6,7 +6,7 @@ import '../data/api/recipe_api_service.dart';
 import '../data/model/recipe_model.dart';
 
 import 'search_provider.dart';
-import 'favorites_provider.dart';
+
 
 // ── Search results ────────────────────────────────────────────────────────────
 final recipeProvider = FutureProvider<List<RecipeModel>>((ref) async {

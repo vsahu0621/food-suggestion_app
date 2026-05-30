@@ -17,18 +17,99 @@ class RecipeApiService {
     return _fetchAndCache(url, cacheKey: 'search_$query');
   }
 
+  Future<RecipeModel?> fetchMealDetail(String id) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'https://www.themealdb.com/api/json/v1/1/lookup.php?i=$id',
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        if (data['meals'] != null) {
+          return RecipeModel.fromJson(data['meals'][0]);
+        }
+      }
+    } catch (_) {}
+
+    return null;
+  }
+
   // ── Fetch by category (used for time-based suggestions) ───────────────────
+  // Future<List<RecipeModel>> fetchByCategory(String category) async {
+  //   // MealDB filter endpoint returns limited fields; we fetch full detail below
+  //   final filterUrl =
+  //       'https://www.themealdb.com/api/json/v1/1/filter.php?c=$category';
+  //   return _fetchAndCache(filterUrl, cacheKey: 'category_$category');
+  // }
   Future<List<RecipeModel>> fetchByCategory(String category) async {
-    // MealDB filter endpoint returns limited fields; we fetch full detail below
-    final filterUrl =
-        'https://www.themealdb.com/api/json/v1/1/filter.php?c=$category';
-    return _fetchAndCache(filterUrl, cacheKey: 'category_$category');
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'https://www.themealdb.com/api/json/v1/1/filter.php?c=$category',
+        ),
+      );
+
+      if (response.statusCode != 200) return [];
+
+      final data = jsonDecode(response.body);
+      final meals = data['meals'] as List?;
+
+      if (meals == null) return [];
+
+      final List<RecipeModel> recipes = [];
+
+      for (final meal in meals.take(10)) {
+        final detail = await fetchMealDetail(meal['idMeal']);
+
+        if (detail != null) {
+          recipes.add(detail);
+        }
+      }
+
+      return recipes;
+    } catch (_) {
+      return [];
+    }
   }
 
   // ── Fetch by area (used for location-based suggestions) ───────────────────
+  // Future<List<RecipeModel>> fetchByArea(String area) async {
+  //   final url = 'https://www.themealdb.com/api/json/v1/1/filter.php?a=$area';
+  //   return _fetchAndCache(url, cacheKey: 'area_$area');
+  // }
+
   Future<List<RecipeModel>> fetchByArea(String area) async {
-    final url = 'https://www.themealdb.com/api/json/v1/1/filter.php?a=$area';
-    return _fetchAndCache(url, cacheKey: 'area_$area');
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'https://www.themealdb.com/api/json/v1/1/filter.php?a=$area',
+        ),
+      );
+
+      if (response.statusCode != 200) return [];
+
+      final data = jsonDecode(response.body);
+      final meals = data['meals'] as List?;
+
+      if (meals == null) return [];
+
+      final List<RecipeModel> recipes = [];
+
+      for (final meal in meals.take(10)) {
+        final detail = await fetchMealDetail(meal['idMeal']);
+
+        if (detail != null) {
+          recipes.add(detail);
+        }
+      }
+
+      return recipes;
+    } catch (_) {
+      return [];
+    }
   }
 
   // ── Core fetch + cache logic ──────────────────────────────────────────────
@@ -37,9 +118,8 @@ class RecipeApiService {
     required String cacheKey,
   }) async {
     try {
-      final response = await http
-          .get(Uri.parse(url))
-          .timeout(const Duration(seconds: 10));
+      final response =
+          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         // Persist raw JSON for offline use

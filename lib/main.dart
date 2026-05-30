@@ -8,7 +8,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'data/model/hive_recipe_model.dart';
 import 'provider/favorites_provider.dart';
 import 'data/api/recipe_api_service.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
